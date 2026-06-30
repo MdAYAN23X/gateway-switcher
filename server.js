@@ -4,9 +4,16 @@ import path from "path";
 import os from "os";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import configRoutes from "./routes/configRoutes.js";
+import backupRoutes from "./routes/backupRoutes.js";
+import gatewayRoutes from "./routes/gatewayRoutes.js";
 
 const app = express();
 const PORT = 3847;
+
+app.use("/api/backups", backupRoutes);
+
+app.use("/api/gateways", gatewayRoutes);
 
 // Middleware
 app.use(cors());
@@ -42,6 +49,8 @@ app.get("/api/health", (req, res) => {
         configPath: CONFIG_PATH
     });
 });
+
+app.use("/api/config", configRoutes);
 
 // Start server
 app.listen(PORT, () => {

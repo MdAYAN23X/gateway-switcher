@@ -9,6 +9,7 @@ if (!fs.existsSync(BACKUP_DIR)) {
 }
 
 export function createBackup() {
+
     if (!configExists()) {
         return null;
     }
@@ -17,19 +18,39 @@ export function createBackup() {
         .toISOString()
         .replace(/[:.]/g, "-");
 
-    const backupPath = path.join(
-        BACKUP_DIR,
-        `settings-${timestamp}.json`
+    const filename = `settings-${timestamp}.json`;
+
+    fs.copyFileSync(
+        getConfigPath(),
+        path.join(BACKUP_DIR, filename)
     );
 
-    fs.copyFileSync(getConfigPath(), backupPath);
+    return filename;
 
-    return backupPath;
 }
 
 export function listBackups() {
+
     return fs.readdirSync(BACKUP_DIR)
         .filter(file => file.endsWith(".json"))
         .sort()
         .reverse();
+
+}
+
+export function restoreBackup(filename) {
+
+    const backupPath = path.join(BACKUP_DIR, filename);
+
+    if (!fs.existsSync(backupPath)) {
+        throw new Error("Backup not found.");
+    }
+
+    fs.copyFileSync(
+        backupPath,
+        getConfigPath()
+    );
+
+    return true;
+
 }

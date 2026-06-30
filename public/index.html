@@ -1,10 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Gateway Switcher</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Claude Gateway Manager</title>
+
+<link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
-    <h1>🚀 Claude Gateway Switcher</h1>
-    <p>Backend is working.</p>
+
+<div class="sidebar">
+
+<div class="logo">
+
+<h2>Gateway</h2>
+
+<span>Manager</span>
+
+</div>
+
+<nav>
+
+<button class="nav active">🏠 Dashboard</button>
+
+<button class="nav">🌐 Gateways</button>
+
+<button class="nav">💾 Backups</button>
+
+<button class="nav">📜 Logs</button>
+
+<button class="nav">⚙ Settings</button>
+
+</nav>
+
+</div>
+
+<div class="main">
+
+<header>
+
+<h1>Claude Gateway Manager</h1>
+
+<button id="refreshBtn">Refresh</button>
+
+</header>
+
+<section class="grid">
+
+<div class="card">
+
+<h3>Status</h3>
+
+<h2 id="status">Checking...</h2>
+
+</div>
+
+<div class="card">
+
+<h3>Gateway</h3>
+
+<p id="gateway">Loading...</p>
+
+</div>
+
+<div class="card">
+
+<h3>Model</h3>
+
+<p id="model">Loading...</p>
+
+</div>
+
+<div class="card wide">
+
+<h3>Configuration</h3>
+
+<div class="card">
+
+    <h3>Gateway Configuration</h3>
+
+    <label>Gateway</label>
+
+    <select id="gatewaySelect"></select>
+
+    <label>API Key</label>
+
+    <input
+        type="password"
+        id="apiKey"
+        placeholder="Enter API Key">
+
+    <label>Base URL</label>
+
+    <input
+        type="text"
+        id="baseUrl">
+
+    <label>Model</label>
+
+    <input
+        type="text"
+        id="modelInput">
+
+    <div class="buttons">
+
+        <button id="applyBtn">
+            Apply Configuration
+        </button>
+
+    </div>
+
+</div>
+
+<pre id="output"></pre>
+
+</div>
+
+</section>
+
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
