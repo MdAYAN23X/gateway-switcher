@@ -10,17 +10,44 @@ import toast from "react-hot-toast";
 export default function Backups() {
 
     const [backups, setBackups] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [actionLoading, setActionLoading] = useState(false);
 
-    useEffect(() => {
-        loadBackups();
-    }, []);
+    async function load() {
 
-    async function loadBackups() {
+        setLoading(true);
+
         try {
+
             const res = await getBackups();
             setBackups(res.backups || []);
+
         } catch {
-            toast.error("Failed to load backups.");
+            toast.error("Failed to load backups");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        load();
+    }, []);
+
+    async function createNew() {
+
+        setActionLoading(true);
+
+        try {
+
+            const res = await createBackup();
+
+            toast.success("Backup created");
+            load();
+
+        } catch {
+            toast.error("Failed to create backup");
+        } finally {
+            setActionLoading(false);
         }
     }
 
@@ -29,10 +56,12 @@ export default function Backups() {
         if (!window.confirm(`Restore "${file}"?`)) return;
 
         try {
+
             await restoreBackup(file);
-            toast.success("Backup restored successfully.");
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Restore failed.");
+            toast.success("Backup restored");
+
+        } catch {
+            toast.error("Restore failed");
         }
     }
 
@@ -41,31 +70,28 @@ export default function Backups() {
         if (!window.confirm(`Delete "${file}"?`)) return;
 
         try {
+
             await deleteBackup(file);
-            toast.success("Backup deleted successfully.");
-            loadBackups();
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Delete failed.");
+            toast.success("Backup deleted");
+            load();
+
+        } catch {
+            toast.error("Delete failed");
         }
     }
 
-    async function createNewBackup() {
-
-        try {
-            const res = await createBackup();
-
-            toast.success("Backup created successfully");
-
-            loadBackups();
-
-        } catch (err) {
-            toast.error(err.response?.data?.message || "Failed to create backup");
-        }
+    if (loading) {
+        return (
+            <div className="text-slate-300 text-lg">
+                Loading backups...
+            </div>
+        );
     }
 
     return (
-        <div className="max-w-5xl space-y-6">
+        <div className="space-y-6">
 
+            {/* Header */}
             <div className="flex items-center justify-between">
 
                 <h1 className="text-3xl font-bold">
@@ -73,86 +99,71 @@ export default function Backups() {
                 </h1>
 
                 <button
-                    onClick={createNewBackup}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition"
+                    onClick={createNew}
+                    disabled={actionLoading}
+                    className={`px-4 py-2 rounded-lg text-white transition ${
+                        actionLoading
+                            ? "bg-gray-600 cursor-not-allowed"
+                            : "bg-blue-600 hover:bg-blue-700"
+                    }`}
                 >
-                    + Create Backup
+                    {actionLoading ? "Creating..." : "Create Backup"}
                 </button>
 
             </div>
 
-            <div className="rounded-lg border border-slate-700 overflow-hidden">
+            {/* Empty state */}
+            {backups.length === 0 ? (
+                <div className="p-6 rounded-xl border border-slate-700 bg-slate-900 text-slate-400">
+                    No backups found. Create your first backup.
+                </div>
+            ) : (
 
-                <table className="w-full">
+                /* Grid Cards */
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                    <thead className="bg-slate-900">
+                    {backups.map(file => (
 
-                        <tr>
-                            <th className="text-left p-3">Backup File</th>
-                            <th className="text-left p-3">Status</th>
-                            <th className="text-center p-3">Actions</th>
-                        </tr>
+                        <div
+                            key={file}
+                            className="p-5 rounded-xl border border-slate-700 bg-slate-900 space-y-4"
+                        >
 
-                    </thead>
+                            <div>
+                                <p className="text-slate-400 text-sm">
+                                    Backup File
+                                </p>
 
-                    <tbody>
+                                <p className="font-mono text-white break-all">
+                                    {file}
+                                </p>
+                            </div>
 
-                        {backups.length === 0 ? (
+                            <div className="flex gap-2 justify-end">
 
-                            <tr>
-                                <td colSpan="3" className="p-4 text-center text-slate-400">
-                                    No backups found.
-                                </td>
-                            </tr>
-
-                        ) : (
-
-                            backups.map((file) => (
-
-                                <tr
-                                    key={file}
-                                    className="border-t border-slate-700 hover:bg-slate-800 transition"
+                                <button
+                                    onClick={() => restore(file)}
+                                    className="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
                                 >
+                                    Restore
+                                </button>
 
-                                    <td className="p-3 font-mono">
-                                        {file}
-                                    </td>
+                                <button
+                                    onClick={() => remove(file)}
+                                    className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white"
+                                >
+                                    Delete
+                                </button>
 
-                                    <td className="p-3 text-green-400">
-                                        Available
-                                    </td>
+                            </div>
 
-                                    <td className="p-3">
-                                        <div className="flex gap-2 justify-center">
+                        </div>
 
-                                            <button
-                                                onClick={() => restore(file)}
-                                                className="rounded-lg bg-blue-600 hover:bg-blue-700 px-3 py-1 text-white transition"
-                                            >
-                                                Restore
-                                            </button>
+                    ))}
 
-                                            <button
-                                                onClick={() => remove(file)}
-                                                className="rounded-lg bg-red-600 hover:bg-red-700 px-3 py-1 text-white transition"
-                                            >
-                                                Delete
-                                            </button>
+                </div>
 
-                                        </div>
-                                    </td>
-
-                                </tr>
-
-                            ))
-
-                        )}
-
-                    </tbody>
-
-                </table>
-
-            </div>
+            )}
 
         </div>
     );
