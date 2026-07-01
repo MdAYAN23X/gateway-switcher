@@ -1,11 +1,13 @@
-import { listBackups, restoreBackup } from "../services/backupService.js";
-import { deleteBackup } from "../services/backupService.js";
-import { createBackupNow } from "../services/backupService.js";
-
+import {
+    listBackups,
+    restoreBackup,
+    deleteBackup,
+    createBackup
+} from "../services/backupService.js";
 export function create(req, res) {
     try {
 
-        const file = createBackupNow();
+        const file = createBackup();
 
         res.json({
             success: true,

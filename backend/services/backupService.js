@@ -1,51 +1,18 @@
 import fs from "fs";
 import path from "path";
-import { getConfigPath, configExists } from "../utils/configManager.js";
-import fs from "fs";
-import path from "path";
-import fs from "fs";
-import path from "path";
-import os from "os";
-import { readConfig } from "../utils/configManager.js";
+import { getConfigPath, configExists, readConfig } from "../utils/configManager.js";
 
 const BACKUP_DIR = path.join(process.cwd(), "backups");
 
-export function createBackupNow() {
-
-    const config = readConfig();
-
-    const filename = `backup-${Date.now()}.json`;
-
-    const filePath = path.join(BACKUP_DIR, filename);
-
-    fs.writeFileSync(filePath, JSON.stringify(config, null, 2));
-
-    return filename;
-}
-
-const BACKUP_DIR = path.join(process.cwd(), "backups");
-
-export function deleteBackup(filename) {
-    const filePath = path.join(BACKUP_DIR, filename);
-
-    if (!fs.existsSync(filePath)) {
-        throw new Error("Backup not found.");
-    }
-
-    fs.unlinkSync(filePath);
-}
-
-const BACKUP_DIR = path.join(process.cwd(), "backups");
-
+// Ensure backup folder exists
 if (!fs.existsSync(BACKUP_DIR)) {
     fs.mkdirSync(BACKUP_DIR, { recursive: true });
 }
 
+// Create backup from current config
 export function createBackup() {
 
-    if (!configExists()) {
-        return null;
-    }
+    if (!configExists()) return null;
 
     const timestamp = new Date()
         .toISOString()
@@ -59,31 +26,38 @@ export function createBackup() {
     );
 
     return filename;
-
 }
 
+// List all backups
 export function listBackups() {
-
     return fs.readdirSync(BACKUP_DIR)
-        .filter(file => file.endsWith(".json"))
+        .filter(f => f.endsWith(".json"))
         .sort()
         .reverse();
-
 }
 
+// Restore backup
 export function restoreBackup(filename) {
 
-    const backupPath = path.join(BACKUP_DIR, filename);
+    const filePath = path.join(BACKUP_DIR, filename);
 
-    if (!fs.existsSync(backupPath)) {
+    if (!fs.existsSync(filePath)) {
         throw new Error("Backup not found.");
     }
 
-    fs.copyFileSync(
-        backupPath,
-        getConfigPath()
-    );
+    fs.copyFileSync(filePath, getConfigPath());
 
     return true;
+}
 
+// Delete backup
+export function deleteBackup(filename) {
+
+    const filePath = path.join(BACKUP_DIR, filename);
+
+    if (!fs.existsSync(filePath)) {
+        throw new Error("Backup not found.");
+    }
+
+    fs.unlinkSync(filePath);
 }

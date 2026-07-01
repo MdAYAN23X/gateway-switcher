@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { getGateways } from "../api/gatewayApi";
 import { getKeys, saveKeys } from "../api/keyApi";
 import toast from "react-hot-toast";
@@ -10,6 +11,11 @@ export default function ApiKeys() {
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState({});
+    const [visibleKeys, setVisibleKeys] = useState({});
+
+    useEffect(() => {
+        load();
+    }, []);
 
     async function load() {
 
@@ -22,19 +28,20 @@ export default function ApiKeys() {
                 getKeys()
             ]);
 
-            setGateways(gRes.gateways);
-            setKeys(kRes.data.gateways || {});
+            setGateways(gRes.gateways || []);
+            setKeys(kRes?.data?.gateways || {});
 
         } catch {
-            toast.error("Failed to load API keys");
-        } finally {
-            setLoading(false);
-        }
-    }
 
-    useEffect(() => {
-        load();
-    }, []);
+            toast.error("Failed to load API keys.");
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    }
 
     function updateKey(id, value) {
 
@@ -45,40 +52,70 @@ export default function ApiKeys() {
                 apiKey: value
             }
         }));
+
+    }
+
+    function toggleVisibility(id) {
+
+        setVisibleKeys(prev => ({
+            ...prev,
+            [id]: !prev[id]
+        }));
+
     }
 
     async function save(id) {
 
-        setSaving(prev => ({ ...prev, [id]: true }));
+        const apiKey = keys[id]?.apiKey?.trim() || "";
+
+        if (!apiKey) {
+            toast.error("API key cannot be empty.");
+            return;
+        }
+
+        setSaving(prev => ({
+            ...prev,
+            [id]: true
+        }));
 
         try {
 
             await saveKeys({
                 gateway: id,
-                apiKey: keys[id]?.apiKey || ""
+                apiKey
             });
 
-            toast.success("Saved");
+            toast.success("API key saved successfully.");
 
         } catch {
-            toast.error("Save failed");
+
+            toast.error("Failed to save API key.");
+
         } finally {
-            setSaving(prev => ({ ...prev, [id]: false }));
+
+            setSaving(prev => ({
+                ...prev,
+                [id]: false
+            }));
+
         }
+
     }
 
     if (loading) {
+
         return (
-            <div className="text-slate-300 text-lg">
-                Loading API keys...
+            <div className="text-lg text-slate-300">
+                Loading API Keys...
             </div>
         );
+
     }
 
     return (
+
         <div className="space-y-6">
 
-            {/* Header */}
             <div className="flex items-center justify-between">
 
                 <h1 className="text-3xl font-bold">
@@ -87,69 +124,98 @@ export default function ApiKeys() {
 
                 <button
                     onClick={load}
-                    className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 transition"
                 >
                     Refresh
                 </button>
 
             </div>
 
-            {/* GRID */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid gap-6 md:grid-cols-2">
 
                 {gateways.map(g => (
 
                     <div
                         key={g.id}
-                        className="p-6 rounded-xl border border-slate-700 bg-slate-900 space-y-4"
+                        className="rounded-xl border border-slate-700 bg-slate-900 p-6 space-y-5"
                     >
 
-                        {/* Header */}
                         <div className="flex items-center justify-between">
 
-                            <h2 className="text-lg font-semibold">
-                                {g.name}
-                            </h2>
+                            <div>
 
-                            <span className="text-xs text-slate-400">
-                                {g.id}
+                                <h2 className="text-lg font-semibold">
+                                    {g.name}
+                                </h2>
+
+                                <p className="text-xs text-slate-400">
+                                    {g.id}
+                                </p>
+
+                            </div>
+
+                            <span
+                                className={`text-sm font-medium ${
+                                    keys[g.id]?.apiKey
+                                        ? "text-green-400"
+                                        : "text-red-400"
+                                }`}
+                            >
+                                {keys[g.id]?.apiKey
+                                    ? "Configured"
+                                    : "Not Set"}
                             </span>
 
                         </div>
 
-                        {/* Input */}
-                        <input
-                            type="text"
-                            placeholder="Enter API Key"
-                            value={keys[g.id]?.apiKey || ""}
-                            onChange={(e) => updateKey(g.id, e.target.value)}
-                            className="w-full p-3 rounded-lg bg-slate-800 border border-slate-700 text-white"
-                        />
+                        <div className="relative">
 
-                        {/* Footer */}
-                        <div className="flex items-center justify-between">
-
-                            <p className={`text-sm ${
-                                keys[g.id]?.apiKey
-                                    ? "text-green-400"
-                                    : "text-red-400"
-                            }`}>
-                                {keys[g.id]?.apiKey ? "Configured" : "Not Set"}
-                            </p>
+                            <input
+                                type={
+                                    visibleKeys[g.id]
+                                        ? "text"
+                                        : "password"
+                                }
+                                autoComplete="off"
+                                placeholder="Enter API Key"
+                                value={keys[g.id]?.apiKey || ""}
+                                onChange={(e) =>
+                                    updateKey(g.id, e.target.value)
+                                }
+                                className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3 pr-12 text-white font-mono focus:border-blue-500 focus:outline-none"
+                            />
 
                             <button
-                                onClick={() => save(g.id)}
-                                disabled={saving[g.id]}
-                                className={`px-4 py-2 rounded-lg text-white transition ${
-                                    saving[g.id]
-                                        ? "bg-gray-600 cursor-not-allowed"
-                                        : "bg-blue-600 hover:bg-blue-700"
-                                }`}
+                                type="button"
+                                onClick={() =>
+                                    toggleVisibility(g.id)
+                                }
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition"
                             >
-                                {saving[g.id] ? "Saving..." : "Save"}
+                                {visibleKeys[g.id]
+                                    ? <EyeOff size={18} />
+                                    : <Eye size={18} />}
                             </button>
 
                         </div>
+
+                        <button
+                            onClick={() => save(g.id)}
+                            disabled={
+                                saving[g.id] ||
+                                !keys[g.id]?.apiKey?.trim()
+                            }
+                            className={`w-full rounded-lg py-3 font-medium transition ${
+                                saving[g.id] ||
+                                !keys[g.id]?.apiKey?.trim()
+                                    ? "cursor-not-allowed bg-slate-700 text-slate-400"
+                                    : "bg-blue-600 text-white hover:bg-blue-700"
+                            }`}
+                        >
+                            {saving[g.id]
+                                ? "Saving..."
+                                : "Save API Key"}
+                        </button>
 
                     </div>
 
@@ -158,5 +224,7 @@ export default function ApiKeys() {
             </div>
 
         </div>
+
     );
+
 }
