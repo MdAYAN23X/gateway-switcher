@@ -1,0 +1,20 @@
+{
+  "defaultGateway": "aerolink",
+  "gateways": {
+    "aerolink": {
+      "apiKey": "jdsjdsdsdwkdowkdowk"
+    },
+    "freemodel": {
+      "apiKey": ""
+    },
+    "agentrouter": {
+      "apiKey": ""
+    },
+    "openrouter": {
+      "apiKey": ""
+    },
+    "anthropic": {
+      "apiKey": ""
+    }
+  }
+}

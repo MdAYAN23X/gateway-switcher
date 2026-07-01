@@ -1,0 +1,20 @@
+{
+  "defaultGateway": "aerolink",
+  "gateways": {
+    "aerolink": {
+      "apiKey": ""
+    },
+    "freemodel": {
+      "apiKey": ""
+    },
+    "agentrouter": {
+      "apiKey": ""
+    },
+    "openrouter": {
+      "apiKey": ""
+    },
+    "anthropic": {
+      "apiKey": ""
+    }
+  }
+}touch
