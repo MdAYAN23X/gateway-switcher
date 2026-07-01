@@ -165,8 +165,3 @@ Useful for developers working with multiple AI providers who need quick switchin
 
 This project is not licensed for public reuse or redistribution.  
 All rights reserved by the author.
-```
-
-Take a look at the **Preview** tab now—it will format beautifully with no extra explanation text or hanging code blocks.
-
-```
