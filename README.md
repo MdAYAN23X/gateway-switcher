@@ -163,7 +163,8 @@ Useful for developers working with multiple AI providers who need quick switchin
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is not licensed for public reuse or redistribution.  
+All rights reserved by the author.
 
 ```
 
