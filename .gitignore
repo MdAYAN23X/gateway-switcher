@@ -1,5 +1,15 @@
+# Dependencies
 node_modules/
-dist/
-.env
+
+# Build output
+frontend/dist/
+
+# Logs
 *.log
-backups/
+
+# Backup files
+backend/backups/*.json
+
+# Environment files
+.env
+.env.*
