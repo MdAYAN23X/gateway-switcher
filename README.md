@@ -32,6 +32,27 @@ Instead of manually editing Claude configuration files, Gateway Switcher allows 
 * 🖥️ Single-command production setup
 
 ---
+## 📸 Screenshots
+
+### Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+### Gateway Manager
+
+![Gateway Manager](screenshots/gateways.png)
+
+### API Keys Manager
+
+![API Keys](screenshots/api-keys.png)
+
+### Backup Manager
+
+![Backups](screenshots/backups.png)
+
+### Settings
+
+![Settings](screenshots/settings.png)
 
 # 🧱 Tech Stack
 
