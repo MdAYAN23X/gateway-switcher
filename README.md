@@ -270,10 +270,3 @@ GitHub: https://github.com/MdAYAN23X
 
 This project is intended for educational, personal, and development purposes.
 
-If you plan to make this repository public, I also recommend adding:
-
-* a project logo/banner,
-* screenshots of the Dashboard, Gateways, API Keys, and Backups pages,
-* and a GIF demonstrating switching gateways.
-
-Those additions make the repository look much more polished and easier for others to understand at a glance.
