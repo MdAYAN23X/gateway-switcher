@@ -1,48 +1,59 @@
 # Gateway Switcher
 
-A full-stack dashboard to manage multiple AI gateways, switch models, configure API keys, and control a unified AI configuration system with backup and restore support.
+A full-stack dashboard for managing multiple AI gateways, switching models, managing API keys, and applying configurations for Claude Code CLI with built-in backup and restore support.
 
 ---
 
 ## 🚀 Overview
 
-Gateway Switcher provides a centralized interface to manage multiple AI providers such as Aerolink, FreeModel AI, Agent Router, OpenRouter, Anthropic, and custom endpoints.
+Gateway Switcher provides a centralized interface for managing multiple AI providers such as:
 
-It allows switching between gateways without manually editing configuration files.
+* Aerolink
+* FreeModel AI
+* Agent Router
+* OpenRouter
+* Anthropic
+* Custom Gateway
 
----
-
-## ✨ Features
-
-- 🔀 Switch between multiple AI gateways
-- 🔑 Store and manage API keys per gateway
-- 🤖 Select models dynamically per provider
-- ⚙️ Apply configuration to local AI environment
-- 💾 Create, restore, and delete backups
-- 🧠 Centralized configuration management
-- ⚡ Fast REST API backend
-- 🎨 Clean React + Tailwind UI
+Instead of manually editing Claude configuration files, Gateway Switcher allows switching between providers, models, and API keys through an intuitive web interface.
 
 ---
 
-## 🧱 Tech Stack
+# ✨ Features
 
-### Frontend
-- React (Vite)
-- Tailwind CSS
-- React Router DOM
-- Axios
-- React Hot Toast
-- Lucide Icons
-
-### Backend
-- Node.js
-- Express.js
-- File-based storage system
+* 🔀 Switch between multiple AI gateways
+* 🤖 Select gateway-specific AI models
+* 🔑 Securely manage API keys for each gateway
+* ⚙️ Apply configuration directly to Claude Code CLI
+* 💾 Create, restore, and delete configuration backups
+* 📊 Dashboard showing current configuration and backend status
+* ⚡ Fast Express REST API
+* 🎨 Modern React + Tailwind CSS interface
+* 🖥️ Single-command production setup
 
 ---
 
-## 📁 Project Structure
+# 🧱 Tech Stack
+
+## Frontend
+
+* React
+* Vite
+* Tailwind CSS
+* React Router DOM
+* Axios
+* React Hot Toast
+* Lucide React
+
+## Backend
+
+* Node.js
+* Express.js
+* File-based configuration management
+
+---
+
+# 📁 Project Structure
 
 ```text
 gateway-switcher/
@@ -53,115 +64,216 @@ gateway-switcher/
 │   ├── services/
 │   ├── utils/
 │   ├── backups/
-│   └── server.js
+│   ├── server.js
+│   └── package.json
 │
 ├── frontend/
 │   ├── src/
 │   │   ├── api/
-│   │   ├── pages/
 │   │   ├── components/
+│   │   ├── pages/
 │   │   └── App.jsx
-│   └── vite.config.js
+│   ├── dist/
+│   └── package.json
 │
+├── package.json
 └── README.md
-
 ```
 
 ---
 
-## ⚙️ Installation
+# ⚙️ Installation
 
-### 1. Clone the repository
+Clone the repository:
 
 ```bash
-git clone [https://github.com/MdAYAN23X/gateway-switcher.git](https://github.com/MdAYAN23X/gateway-switcher.git)
+git clone https://github.com/MdAYAN23X/gateway-switcher.git
 cd gateway-switcher
-
 ```
 
-### 2. Backend Setup
+Install dependencies:
 
 ```bash
-cd backend
 npm install
-npm run dev
-
+npm install --prefix backend
+npm install --prefix frontend
 ```
-
-Backend runs at: `http://localhost:3847`
-
-### 3. Frontend Setup
-
-```bash
-cd ../frontend
-npm install
-npm run dev
-
-```
-
-Frontend runs at: `http://localhost:5173`
 
 ---
 
-## 🔌 API Endpoints
+# 🚀 Running the Application
 
-### Gateways
+## Development Mode
 
-* `GET /api/gateways`
+Runs both frontend and backend with hot reload.
 
-### Configuration
+```bash
+npm run dev
+```
 
-* `GET /api/config`
-* `POST /api/config`
+Frontend:
 
-### API Keys
+```
+http://localhost:5173
+```
 
-* `GET /api/keys`
-* `POST /api/keys`
+Backend:
 
-### Backups
-
-* `GET /api/backups`
-* `POST /api/backups`
-* `POST /api/backups/restore`
-* `DELETE /api/backups`
+```
+http://localhost:3847
+```
 
 ---
 
-## 💾 Backup System
+## Production Mode (Recommended)
 
-Backups are stored locally at: `backend/backups/`
+Build the frontend:
 
-### Features:
+```bash
+npm run build
+```
 
-* Create backups manually
+Start the application:
+
+```bash
+npm start
+```
+
+Open:
+
+```
+http://localhost:3847
+```
+
+Only a single backend process is required. The Express server serves both the API and the React application.
+
+---
+
+# 📌 Daily Usage
+
+For normal day-to-day usage:
+
+```bash
+cd ~/gateway-switcher
+npm start
+```
+
+Open:
+
+```
+http://localhost:3847
+```
+
+If frontend changes are made, rebuild before starting:
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+# 🔌 API Endpoints
+
+## Gateway Management
+
+```
+GET    /api/gateways
+```
+
+## Configuration
+
+```
+GET    /api/config
+POST   /api/config
+```
+
+## API Keys
+
+```
+GET    /api/keys
+POST   /api/keys
+```
+
+## Backups
+
+```
+GET    /api/backups
+POST   /api/backups
+POST   /api/backups/restore
+DELETE /api/backups
+```
+
+## Health Check
+
+```
+GET /api/health
+```
+
+---
+
+# 💾 Backup System
+
+Gateway Switcher automatically stores configuration backups locally.
+
+```
+backend/backups/
+```
+
+Supported operations:
+
+* Create backups
 * Restore previous configurations
-* Delete old backups
+* Delete outdated backups
 
 ---
 
-## 🧠 Use Case
+# 🧠 Workflow
 
-Useful for developers working with multiple AI providers who need quick switching between APIs without manually editing environment or config files.
-
----
-
-## 📌 Future Improvements
-
-* Authentication system
-* Cloud backup storage
-* Team collaboration support
-* Usage analytics dashboard
+1. Launch Gateway Switcher.
+2. Save API keys for each provider.
+3. Select a gateway.
+4. Choose a model.
+5. Apply the configuration.
+6. Use Claude Code CLI with the selected settings.
 
 ---
 
-## 👨‍💻 Author
+# 🎯 Use Case
 
-**MdAYAN23X**
+Gateway Switcher is designed for developers who frequently switch between different AI providers and models while using Claude Code CLI. It eliminates repetitive manual configuration changes and provides a centralized management interface.
 
 ---
 
-## 📄 License
+# 🔮 Future Improvements
 
-This project is not licensed for public reuse or redistribution.  
-All rights reserved by the author.
+* Automatic gateway detection
+* Configuration profiles
+* Import and export settings
+* Configuration history
+* Search and filter support
+* Desktop application (Electron)
+* Auto-update support
+* Theme customization
+
+---
+
+# 👨‍💻 Author
+
+**Mohammad Ayan**
+
+GitHub: https://github.com/MdAYAN23X
+
+---
+
+# 📄 License
+
+This project is intended for educational, personal, and development purposes.
+
+If you plan to make this repository public, I also recommend adding:
+
+* a project logo/banner,
+* screenshots of the Dashboard, Gateways, API Keys, and Backups pages,
+* and a GIF demonstrating switching gateways.
+
+Those additions make the repository look much more polished and easier for others to understand at a glance.
